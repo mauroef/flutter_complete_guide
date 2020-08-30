@@ -1,31 +1,46 @@
 import 'package:flutter/material.dart';
 
+import './question.dart';
+import './answer.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return MyAppState();
+    return _MyAppState();
   }
 }
 
-class MyAppState extends State<MyApp> {
-  var questionIndex = 0;
+class _MyAppState extends State<MyApp> {
+  var _questionIndex = 0;
 
-  void answerQuestion(int index) {
-    //questionIndex = questionIndex < 2 ? questionIndex + 1 : questionIndex;
-    //print('Answer Question $index');
+  void _answerQuestion() {
     setState(() {
-      questionIndex = questionIndex < 1 ? questionIndex + 1 : 0;
+      if (_questionIndex < 2) {
+        _questionIndex = _questionIndex + 1;
+      } else {
+        _questionIndex = 0;
+      }
     });
-    print(questionIndex);
+    print(_questionIndex);
   }
 
   //@override
   Widget build(BuildContext context) {
     var questions = [
-      'What\'s your favorite color?',
-      'What\'s your favorite animal?'
+      {
+        'questionText': 'What\'s your favorite color?',
+        'answers': ['Blue', 'Yellow']
+      },
+      {
+        'questionText': 'What\'s your favorite animal?',
+        'answers': ['Lion', 'Tiger', 'Horse', 'Monkey']
+      },
+      {
+        'questionText': 'Who\'s your favorite instructor?',
+        'answers': ['Max', 'Jonh', 'David']
+      }
     ];
 
     return MaterialApp(
@@ -33,20 +48,16 @@ class MyAppState extends State<MyApp> {
             appBar: AppBar(
               title: Text('My First App'),
             ),
-            body: Column(children: <Widget>[
-              Text(questions[questionIndex]),
-              RaisedButton(
-                child: Text('Answer 1'),
-                onPressed: () => answerQuestion(1),
-              ),
-              RaisedButton(
-                child: Text('Answer 2'),
-                onPressed: () => answerQuestion(2),
-              ),
-              RaisedButton(
-                child: Text('Answer 3'),
-                onPressed: () => answerQuestion(3),
-              ),
-            ])));
+            body: Column(
+              children: <Widget>[
+                Question(
+                  questionText: questions[_questionIndex]['questionText'],
+                ),
+                ...(questions[_questionIndex]['answers'] as List<String>)
+                    .map((answer) {
+                  return Answer(_answerQuestion, answer);
+                }).toList()
+              ],
+            )));
   }
 }
